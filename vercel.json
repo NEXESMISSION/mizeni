@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build",
+  "framework": "create-react-app",
+  "outputDirectory": "build",
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}

@@ -1,6 +1,16 @@
-# Getting Started with Create React App
+# MIZENI - Point of Sale System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+MIZENI is a modern Point of Sale (POS) system built with React, TypeScript, and Supabase. It provides a simple and elegant interface for managing products, processing sales, and tracking inventory.
+
+## Features
+
+- Product management with image uploads
+- Real-time inventory tracking
+- Sales processing with receipt generation
+- Sales history and reporting
+- Mobile-responsive design
+- Authentication and user management
+- Arabic language support
 
 ## Available Scripts
 
@@ -28,6 +38,29 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Deployment on Vercel
+
+### Prerequisites
+
+1. Create a [Vercel](https://vercel.com) account
+2. Create a [Supabase](https://supabase.com) project
+3. Configure environment variables
+
+### Environment Setup
+
+Create a `.env` file in the root directory with the following variables:
+
+```
+REACT_APP_SUPABASE_URL=your_supabase_url
+REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Deployment Steps
+
+1. Connect your GitHub repository to Vercel
+2. Configure the environment variables in the Vercel dashboard
+3. Deploy the application
 
 ### `npm run eject`
 

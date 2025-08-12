@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Package, BarChart2 } from 'lucide-react';
+import { ShoppingCart, Package, BarChart2, DollarSign } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 // Translation object (will be moved to a separate file in production)
@@ -10,6 +10,7 @@ const translations = {
     register: "الكاشير",
     inventory: "المخزون",
     reports: "التقارير",
+    finance: "المالية",
     logout: "تسجيل خروج",
   }
 };
@@ -26,6 +27,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
     { id: '/', label: 'register', icon: ShoppingCart },
     { id: '/inventory', label: 'inventory', icon: Package },
     { id: '/reports', label: 'reports', icon: BarChart2 },
+    { id: '/finance', label: 'finance', icon: DollarSign },
   ];
 
   const handleSignOut = async () => {

@@ -43,6 +43,7 @@ const POS: React.FC = () => {
   const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const searchInputRef = React.useRef<HTMLInputElement>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -173,6 +174,15 @@ const POS: React.FC = () => {
     );
   };
 
+  // Clear search and focus on input
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    // Focus on the search input after clearing
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  };
+
   // Complete sale
   const handleCheckout = async () => {
     if (!user || cart.length === 0) return;
@@ -298,12 +308,22 @@ const POS: React.FC = () => {
           <div className="mb-4 relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input 
+              ref={searchInputRef}
               type="text" 
               placeholder={t('search_products')} 
               value={searchTerm} 
               onChange={(e) => setSearchTerm(e.target.value)} 
               className="w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-transparent text-lg" 
             />
+            {searchTerm && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute left-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label="Clear search"
+              >
+                <Trash size={18} />
+              </button>
+            )}
           </div>
           
           {/* Space for additional buttons if needed */}

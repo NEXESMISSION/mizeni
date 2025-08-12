@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Sidebar from './components/layout/Sidebar';
-import { SignOutButton } from './components/ui';
+import { SignOutButton, ScrollToTop } from './components/ui';
 import Auth from './pages/Auth';
 import Pos from './pages/Pos';
 import Inventory from './pages/Inventory';
 import Reports from './pages/Reports';
+import Finance from './pages/Finance';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -66,6 +67,7 @@ const AppLayout = () => {
           <Route path="/cashier" element={<Navigate to="/" replace />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/finance" element={<Finance />} />
         </Routes>
       </div>
     </div>
@@ -76,6 +78,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/*" element={

@@ -22,7 +22,11 @@ const translations = {
     delete_confirm: "هل تريد حذف هذا المنتج؟",
     delete_success: "تم حذف المنتج بنجاح",
     delete_error: "حدث خطأ أثناء حذف المنتج",
-    no_products: "لا توجد منتجات. أضف منتجات لعرضها هنا."
+    no_products: "لا توجد منتجات. أضف منتجات لعرضها هنا.",
+    all_products: "كل المنتجات",
+    low_stock_only: "المنتجات منخفضة المخزون",
+    new_products: "المنتجات الجديدة",
+    filter_products: "تصفية المنتجات"
   }
 };
 
@@ -31,11 +35,12 @@ const t = (key: string) => translations.ar[key as keyof typeof translations.ar] 
 const Inventory: React.FC = () => {
   const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
-  // Categories state has been removed
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
+  const [filterType, setFilterType] = useState<'all' | 'low_stock' | 'new'>('all');
 
   // Fetch products on component mount
   useEffect(() => {
@@ -49,7 +54,9 @@ const Inventory: React.FC = () => {
         console.log('Fetching inventory products for user:', user.id);
         const productsData = await getProducts(user.id);
         console.log('Inventory products fetched:', productsData?.length || 0, 'items');
-        setProducts(Array.isArray(productsData) ? productsData : []);
+        const productsArray = Array.isArray(productsData) ? productsData : [];
+        setAllProducts(productsArray);
+        setProducts(productsArray);
       } catch (error) {
         console.error('Error fetching inventory data:', error);
         setNotification({
@@ -63,6 +70,31 @@ const Inventory: React.FC = () => {
 
     fetchData();
   }, [user]);
+  
+  // Apply filters whenever filterType changes
+  useEffect(() => {
+    if (allProducts.length === 0) return;
+    
+    switch (filterType) {
+      case 'low_stock':
+        // Filter products where stock is at or below their low_stock_threshold
+        setProducts(allProducts.filter(p => p.stock <= p.low_stock_threshold));
+        break;
+      case 'new':
+        // Sort by creation date (newest first) and take the most recent 20%
+        const sortedByDate = [...allProducts].sort((a, b) => {
+          const dateA = new Date(a.created_at || '').getTime();
+          const dateB = new Date(b.created_at || '').getTime();
+          return dateB - dateA;
+        });
+        const newCount = Math.max(Math.ceil(sortedByDate.length * 0.2), 5); // At least 5 items or 20%
+        setProducts(sortedByDate.slice(0, newCount));
+        break;
+      default: // 'all'
+        setProducts(allProducts);
+        break;
+    }
+  }, [filterType, allProducts]);
 
   // Format currency
   const formatCurrency = (amount: number) => `${amount.toFixed(2)} د.ت`;
@@ -161,13 +193,38 @@ const Inventory: React.FC = () => {
       <div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-2">
           <h2 className="text-2xl font-bold">{t('inventory_management')}</h2>
-          <button 
-            onClick={() => setIsFormOpen(true)} 
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
-          >
-            <PlusCircle size={20}/>
-            {t('add_product')}
-          </button>
+          
+          <div className="flex gap-2 flex-wrap items-center">
+            {/* Filter buttons */}
+            <div className="bg-white border rounded-lg p-1 flex">
+              <button 
+                onClick={() => setFilterType('all')} 
+                className={`px-3 py-1.5 text-sm rounded-md ${filterType === 'all' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+              >
+                {t('all_products')}
+              </button>
+              <button 
+                onClick={() => setFilterType('low_stock')} 
+                className={`px-3 py-1.5 text-sm rounded-md ${filterType === 'low_stock' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+              >
+                {t('low_stock_only')}
+              </button>
+              <button 
+                onClick={() => setFilterType('new')} 
+                className={`px-3 py-1.5 text-sm rounded-md ${filterType === 'new' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+              >
+                {t('new_products')}
+              </button>
+            </div>
+            
+            <button 
+              onClick={() => setIsFormOpen(true)} 
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700"
+            >
+              <PlusCircle size={20}/>
+              {t('add_product')}
+            </button>
+          </div>
         </div>
         
         {loading ? (

@@ -78,7 +78,7 @@ const Cart: React.FC<CartProps> = ({ cart, products, onUpdateQuantity, onCheckou
                       onChange={(e) => onUpdateQuantity(item.product_id, parseInt(e.target.value) || 0)} 
                       min="1"
                       max={product.stock}
-                      className="w-14 text-center border rounded-md p-1 bg-transparent"
+                      className="w-14 h-8 text-center border rounded-md p-1 bg-white font-bold text-lg"
                     />
                     <button 
                       onClick={() => onUpdateQuantity(item.product_id, 0)} 

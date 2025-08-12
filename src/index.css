@@ -12,6 +12,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Disable double-tap zoom */
+  touch-action: manipulation;
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 code {
